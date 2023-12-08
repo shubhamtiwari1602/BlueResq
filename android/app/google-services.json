@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "45509271399",
+    "project_id": "blueresq-1a155",
+    "storage_bucket": "blueresq-1a155.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45509271399:android:eee63b59151dd7589d99c2",
+        "android_client_info": {
+          "package_name": "com.example.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45509271399-g04f6bhfmmbne8dku7dndsdg5ubep8ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.demo",
+            "certificate_hash": "975e3aecd3c4eb911c29a95832d10794246b88e1"
+          }
+        },
+        {
+          "client_id": "45509271399-511ea55ijgreujknc9b4s34fqphl59uh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSElKHL-LsVy7pYpyaIwaiiaQnqVqGC6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45509271399-511ea55ijgreujknc9b4s34fqphl59uh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "45509271399-n2e738i8lup582aes6ifko4dqdffvato.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.testingBlueResq.demo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
