@@ -52,6 +52,13 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.indigoAccent,
                       fontWeight: FontWeight.bold),
                 ),
+                const Text(
+                  "BlueResq ",
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.indigoAccent,
+                      fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(
                   height: 50,
                 ),
@@ -100,7 +107,7 @@ class GsignInButton extends ConsumerWidget {
           SizedBox(width: 8), // Add some space between the icon and text
           // Text
           Text(
-            'Log-In With Google',
+            'Sign In With Google',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

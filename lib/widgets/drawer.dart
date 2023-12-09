@@ -12,7 +12,7 @@ class MyDrawer extends StatelessWidget {
         color: Colors.white,
         child: Column(
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               padding: EdgeInsets.zero,
               child: UserAccountsDrawerHeader(
                 accountName: Text("User XYZ"),
@@ -25,11 +25,11 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 CupertinoIcons.home,
                 color: Colors.black,
               ),
-              title: Text(
+              title: const Text(
                 "Home",
                 textScaleFactor: 1.3,
                 style: TextStyle(color: Colors.black),
@@ -38,7 +38,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
               },
             ),
-            ListTile(
+            const ListTile(
               leading: Icon(
                 CupertinoIcons.profile_circled,
                 color: Colors.black,
@@ -48,8 +48,9 @@ class MyDrawer extends StatelessWidget {
                 textScaleFactor: 1.3,
                 style: TextStyle(color: Colors.black),
               ),
+              
             ),
-            ListTile(
+            const ListTile(
               leading: Icon(
                 CupertinoIcons.info,
                 color: Colors.black,
@@ -60,7 +61,7 @@ class MyDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-            ListTile(
+            const ListTile(
               leading: Icon(
                 CupertinoIcons.square_list,
                 color: Colors.black,
@@ -71,7 +72,7 @@ class MyDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-            ListTile(
+            const ListTile(
               leading: Icon(
                 CupertinoIcons.settings_solid,
                 color: Colors.black,
@@ -82,13 +83,13 @@ class MyDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 CupertinoIcons.arrow_right_circle_fill,
                 color: Colors.black,
               ),
-              title: Text(
+              title: const Text(
                 "Logout",
                 textScaleFactor: 1.3,
                 style: TextStyle(color: Colors.black),
@@ -99,11 +100,11 @@ class MyDrawer extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             // App Version at the bottom
-            Align(
+            const Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(16.0),

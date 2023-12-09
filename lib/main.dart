@@ -25,17 +25,19 @@ class Myapp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.system,
       darkTheme: ThemeData(
         brightness: Brightness.light,
       ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+      theme: ThemeData(useMaterial3: true,
+        
         primarySwatch: Colors.blue,
+        
         fontFamily: GoogleFonts.lato().fontFamily,
         appBarTheme: const AppBarTheme(
           color: Colors.white,
-          elevation: 1.0,
+          elevation: 0.0,
           iconTheme: IconThemeData(color: Colors.black),
           titleTextStyle: TextStyle(color: Colors.black),
         ),
