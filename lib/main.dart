@@ -1,3 +1,4 @@
+import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/pages/Active_cards.dart';
 import 'package:demo/pages/Sample_map_page.dart';
 import 'package:demo/pages/empty.dart';
@@ -12,30 +13,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
-//Stateful widgets - which involve change in state.
-//
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const ProviderScope(child:  Myapp()));
+  runApp(const ProviderScope(child: Myapp()));
 }
 
 class Myapp extends StatelessWidget {
-  const Myapp({super.key});
+  const Myapp({Key? key});
 
-//override -used to rewrite the class function widget
-  //context - helps in telling the location of each widget
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //home: HomePage(),
       themeMode: ThemeMode.light,
       darkTheme: ThemeData(
         brightness: Brightness.light,
       ),
-      debugShowCheckedModeBanner:
-          false, //removes the debug banner while testing
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: GoogleFonts.lato().fontFamily,
@@ -46,9 +40,7 @@ class Myapp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.black),
         ),
       ),
-      //  initialRoute: "/home",
       routes: {
-        "/": (context) => const LoginPage(),
         MyRoutes.homeRoute: (context) => const HomePage(),
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
@@ -57,6 +49,22 @@ class Myapp extends StatelessWidget {
         MyRoutes.emptypage: (context) => const zeroclass(),
         MyRoutes.verify: (context) => const verify(),
       },
+      home: StreamBuilder(
+        stream: AuthMethods().authChanges,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasData) {
+            return const HomePage();
+          }
+
+          return const LoginPage();
+        },
+      ),
     );
   }
 }

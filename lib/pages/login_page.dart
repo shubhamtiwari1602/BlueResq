@@ -1,10 +1,9 @@
-import 'package:demo/auth/auth_controller.dart';
+import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/pages/sign_up.dart';
 import 'package:demo/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sign_in_button/sign_in_button.dart';
 
 //New Font library imported
 
@@ -41,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void signInWithGoogle() {}
+  
 
   @override
   Widget build(BuildContext context) {
@@ -185,18 +184,19 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class GsignInButton extends ConsumerWidget {
-  const GsignInButton({
+   GsignInButton({
     super.key,
   });
-  void signInWithGoogle(WidgetRef ref) {
-    ref.read(authControllerProvider).signInWithGoogle();
-  }
-
+  final AuthMethods _authMethods = AuthMethods();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () {
-        signInWithGoogle(ref);
+      onPressed: () async{
+        bool res = await _authMethods.signInWithGoogle(context);
+        if(res){
+          Navigator.pushNamed(context, MyRoutes.homeRoute);
+
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red, // Set the button's background color
