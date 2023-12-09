@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: 250,
                 ),
                 const SizedBox(
-                  height: 0,
+                  height: 20,
                 ),
                 const Text(
                   "Welcome ",
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 50,
                 ),
                 
                 GsignInButton(),
