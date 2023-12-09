@@ -5,7 +5,7 @@ import 'package:demo/pages/empty.dart';
 import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
 import 'package:demo/pages/resolved_confirm.dart';
-import 'package:demo/pages/sign_up.dart';
+
 import 'package:demo/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +45,6 @@ class Myapp extends StatelessWidget {
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
         MyRoutes.mappage: (context) => const MapPage(),
-        MyRoutes.register: (context) => const RegisterForm(),
         MyRoutes.emptypage: (context) => const zeroclass(),
         MyRoutes.verify: (context) => const verify(),
       },
