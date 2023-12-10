@@ -15,14 +15,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
-
-  
-
-
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -63,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 50,
                 ),
                 
-                GsignInButton(),
+                LogInButtion(),
               ],
             ),
           ),
@@ -73,13 +65,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class GsignInButton extends ConsumerWidget {
-   GsignInButton({
-    super.key,
-  });
+
+class LogInButtion extends StatelessWidget {
+   LogInButtion({super.key});
   final AuthMethods _authMethods = AuthMethods();
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async{
         bool res = await _authMethods.signInWithGoogle(context);
