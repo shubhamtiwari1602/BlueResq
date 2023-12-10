@@ -2,7 +2,7 @@ import 'package:demo/auth/auth_methods.dart';
 
 import 'package:demo/utils/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //New Font library imported
