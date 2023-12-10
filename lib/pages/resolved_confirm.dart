@@ -60,7 +60,7 @@ class _verifyState extends State<verify> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -70,13 +70,13 @@ class _verifyState extends State<verify> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Submit in form of File(preferaably pdf)'),
+                      title: const Text('Submit in form of File(preferaably pdf)'),
                       content: Column(
                         children: [
-                          Text('Please enter the File path:'),
+                          const Text('Please enter the File path:'),
                           TextField(
                             controller: _pdfController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'File Path',
                             ),
                           ),
@@ -95,7 +95,7 @@ class _verifyState extends State<verify> {
                             // You can access the entered PDF path using _pdfController.text
                             Navigator.pop(context);
                           },
-                          child: Text('Okay'),
+                          child: const Text('Okay'),
                         ),
                       ],
                     );
@@ -104,12 +104,12 @@ class _verifyState extends State<verify> {
               },
               child: Text('Submission'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _showSubmitDialog();
               },
-              child: Text('Final Submit'),
+              child: const Text('Final Submit'),
             ),
           ],
         ),

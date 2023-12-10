@@ -5,6 +5,6 @@ class MyRoutes {
   static String activecases = "/active";
   static String mappage = "/mappage";
   static String register = "/register";
-  static String emptypage = "/empty";
+  
   static String verify = "/verify";
 }

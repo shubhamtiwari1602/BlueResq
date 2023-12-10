@@ -1,7 +1,7 @@
 import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/pages/Active_cards.dart';
 import 'package:demo/pages/Sample_map_page.dart';
-import 'package:demo/pages/empty.dart';
+
 import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
 import 'package:demo/pages/resolved_confirm.dart';
@@ -47,7 +47,7 @@ class Myapp extends StatelessWidget {
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
         MyRoutes.mappage: (context) => const MapPage(),
-        MyRoutes.emptypage: (context) => const zeroclass(),
+        
         MyRoutes.verify: (context) => const verify(),
       },
       home: StreamBuilder(
