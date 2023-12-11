@@ -19,17 +19,9 @@ class CardPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'mild'),
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'mild'),
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'mild'),
-              CardItem('animal name', 'Location', 'severe'),
-              CardItem('animal name', 'Location', 'mild'),
-              CardItem('animal name', 'Location', 'severe'),
+              CardItem('Dog', 'latlang', 'severe'),
+              CardItem('Cat', 'latlang', 'mild'),
+              
             ],
           ),
         ),
