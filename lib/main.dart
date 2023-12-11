@@ -46,7 +46,10 @@ class Myapp extends StatelessWidget {
         MyRoutes.homeRoute: (context) => const HomePage(),
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
-        MyRoutes.mappage: (context) => const MapPage(),
+        MyRoutes.mappage: (context) =>   MapPage(
+          animalName: '', severity: '', animalLocation: ''
+          
+        ),
         
         MyRoutes.verify: (context) => const verify(),
       },

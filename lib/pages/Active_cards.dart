@@ -1,8 +1,9 @@
 import 'package:demo/pages/Sample_map_page.dart';
 import 'package:flutter/material.dart';
 
+
 class CardPage extends StatelessWidget {
-  const CardPage({super.key});
+  const CardPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,8 +11,10 @@ class CardPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: const Text('Active Cases',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Active Cases',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: const Center(
         child: SingleChildScrollView(
@@ -19,9 +22,8 @@ class CardPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CardItem('Dog', 'latlang', 'severe'),
-              CardItem('Cat', 'latlang', 'mild'),
-              
+              CardItem('Dog', 'severe', 'Chennai Airport'),
+              CardItem('Cat', 'mild', 'Chennai Railway Station'),
             ],
           ),
         ),
@@ -31,11 +33,16 @@ class CardPage extends StatelessWidget {
 }
 
 class CardItem extends StatelessWidget {
-  final String animal;
+  final String animalName;
+  final String severity;
   final String location;
-  final String condition;
 
-  const CardItem(this.animal, this.location, this.condition, {super.key});
+  const CardItem(
+    this.animalName,
+    this.severity,
+    this.location, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +50,20 @@ class CardItem extends StatelessWidget {
     Color cardColor = Colors.white;
 
     // Define stripColor based on condition
-    Color stripColor = condition == 'mild' ? Colors.yellow : Colors.red;
+    Color stripColor =
+        severity == 'mild' ? Colors.yellow : Colors.red;
 
     return GestureDetector(
-      onTap: () {
+      onTap: ()  {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const MapPage()), // Navigate to ActiveCasesPage
+            builder: (context) => MapPage(
+              animalName: animalName,
+              severity: severity,
+              animalLocation: location,
+            ),
+          ),
         );
       },
       child: Row(
@@ -64,8 +77,7 @@ class CardItem extends StatelessWidget {
                   color: cardColor, // gives card background color to white
                   border: Border(
                     left: BorderSide(
-                      color:
-                          stripColor, // gives left border color based on condition
+                      color: stripColor, // gives left border color based on condition
                       width: 4.0, // this can be changed
                     ),
                   ),
@@ -76,18 +88,21 @@ class CardItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        animal,
-                        style: const TextStyle(fontSize: 24.0, color: Colors.black),
+                        animalName,
+                        style: const TextStyle(
+                            fontSize: 24.0, color: Colors.black),
                       ),
                       const SizedBox(height: 10.0),
                       Text(
                         location,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
                       ),
                       const SizedBox(height: 10.0),
                       Text(
-                        condition,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                        severity,
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
                       ),
                     ],
                   ),
@@ -100,4 +115,3 @@ class CardItem extends StatelessWidget {
     );
   }
 }
- // in the original code nextpage should be rishi's code so replace it
