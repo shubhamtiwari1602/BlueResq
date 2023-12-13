@@ -1,11 +1,7 @@
 import 'package:demo/auth/auth_methods.dart';
-
 import 'package:demo/utils/routes.dart';
 import 'package:flutter/material.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-//New Font library imported
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,6 +11,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final AuthMethods _authMethods = AuthMethods();
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -22,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
       child: Center(
         child: SingleChildScrollView(
           child: Form(
-             // Use the form key to validate the form
             child: Column(
               children: [
                 const SizedBox(
@@ -45,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold),
                 ),
                 const Text(
-                  "BlueResq ",
+                  "Blue Resq ",
                   style: TextStyle(
                       fontSize: 30,
                       color: Colors.indigoAccent,
@@ -54,8 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 50,
                 ),
-                
-                LogInButtion(),
+                LogInButton(_authMethods),
               ],
             ),
           ),
@@ -65,44 +61,42 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+class LogInButton extends StatelessWidget {
+  final AuthMethods _authMethods;
 
-class LogInButtion extends StatelessWidget {
-   LogInButtion({super.key});
-  final AuthMethods _authMethods = AuthMethods();
+  LogInButton(this._authMethods);
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () async{
-        bool res = await _authMethods.signInWithGoogle(context);
-        if(res){
-          Navigator.pushNamed(context, MyRoutes.homeRoute);
+      onPressed: () async {
+        bool success = await _authMethods.signInWithGoogle(context);
 
+        if (success) {
+          Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red, // Set the button's background color
-        padding: const EdgeInsets.all(16.0), // Set the button's padding
+        backgroundColor: Colors.red,
+        padding: const EdgeInsets.all(16.0),
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(8.0), // Set button's border radius
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Google icon
           Icon(
             FontAwesomeIcons.google,
-            color: Colors.white, // Set icon color
+            color: Colors.white,
           ),
-          SizedBox(width: 8), // Add some space between the icon and text
-          // Text
+          SizedBox(width: 8),
           Text(
             'Sign In With Google',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.white, // Set button's text color
+              color: Colors.white,
             ),
           ),
         ],

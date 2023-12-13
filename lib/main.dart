@@ -1,11 +1,9 @@
 import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/pages/Active_cards.dart';
 import 'package:demo/pages/Sample_map_page.dart';
-
 import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
 import 'package:demo/pages/resolved_confirm.dart';
-
 import 'package:demo/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,11 +14,11 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const ProviderScope(child: Myapp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class Myapp extends StatelessWidget {
-  const Myapp({Key? key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +28,9 @@ class Myapp extends StatelessWidget {
         brightness: Brightness.light,
       ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true,
-        
+      theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
-        
         fontFamily: GoogleFonts.lato().fontFamily,
         appBarTheme: const AppBarTheme(
           color: Colors.white,
@@ -46,29 +43,38 @@ class Myapp extends StatelessWidget {
         MyRoutes.homeRoute: (context) => const HomePage(),
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
-        MyRoutes.mappage: (context) =>   MapPage(
-          animalName: '', severity: '', animalLocation: ''
-          
+        MyRoutes.mappage: (context) => MapPage(
+          animalName: '',
+          severity: '',
+          animalLocation: '',
         ),
-        
         MyRoutes.verify: (context) => const verify(),
       },
-      home: StreamBuilder(
-        stream: AuthMethods().authChanges,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      home: AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
+    );
+  }
+}
 
-          if (snapshot.hasData) {
-            return const HomePage();
-          }
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({Key? key});
 
-          return const LoginPage();
-        },
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: AuthMethods().authChanges,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.hasData) {
+          return const HomePage();
+        }
+
+        return const LoginPage();
+      },
     );
   }
 }

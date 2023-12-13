@@ -4,21 +4,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<User?> get authChanges => _auth.authStateChanges();
   User get user => _auth.currentUser!;
-  
+
   Future<bool> signInWithGoogle(BuildContext context) async {
-    bool res = false;
     try {
+      showLoading(context, 'Signing in...');
+
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
+      if (googleUser == null) {
+        Navigator.of(context).pop(); // Close loading dialog
+        return false;
+      }
+
       final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -39,14 +44,15 @@ class AuthMethods {
             'userEmail': user.email,
           });
         }
-        res = true;
       }
+
+      Navigator.of(context).pop(); // Close loading dialog
+      return true;
     } on FirebaseAuthException catch (e) {
-      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop(); // Close loading dialog
       showSnackBar(context, e.message!);
-      res = false;
+      return false;
     }
-    return res;
   }
 
   void signOut() async {
