@@ -1,9 +1,15 @@
 import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/pages/Active_cards.dart';
 import 'package:demo/pages/Sample_map_page.dart';
+
+import 'package:demo/pages/drawer_pages/feedback.dart';
+import 'package:demo/pages/drawer_pages/setting.dart';
+
 import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
+
 import 'package:demo/pages/resolved_confirm.dart';
+
 import 'package:demo/utils/routes.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'pages/drawer_pages/about_us.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +58,10 @@ class MyApp extends StatelessWidget {
           animalLocation: '',
         ),
         MyRoutes.verify: (context) => const verify(),
+        MyRoutes.setting: (context) => const Setting(),
+        MyRoutes.feedback: (context) =>  FeedBack(),
+        MyRoutes.about: (context) => const AboutUs(),
+        
       },
       home: const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
     );

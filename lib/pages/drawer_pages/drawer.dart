@@ -53,19 +53,8 @@ class MyDrawer extends StatelessWidget {
                     Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
                   },
                 ),
-                const ListTile(
-                  leading: Icon(
-                    CupertinoIcons.profile_circled,
-                    color: Colors.black,
-                  ),
-                  title: Text(
-                    "Profile",
-                    textScaleFactor: 1.3,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  // Add functionality for Profile page if needed
-                ),
-                const ListTile(
+                
+                ListTile(
                   leading: Icon(
                     CupertinoIcons.info,
                     color: Colors.black,
@@ -75,9 +64,11 @@ class MyDrawer extends StatelessWidget {
                     textScaleFactor: 1.3,
                     style: TextStyle(color: Colors.black),
                   ),
-                  // Add functionality for About Us page if needed
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, MyRoutes.about);
+                  },
                 ),
-                const ListTile(
+                ListTile(
                   leading: Icon(
                     CupertinoIcons.square_list,
                     color: Colors.black,
@@ -87,9 +78,11 @@ class MyDrawer extends StatelessWidget {
                     textScaleFactor: 1.3,
                     style: TextStyle(color: Colors.black),
                   ),
-                  // Add functionality for Feedback page if needed
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, MyRoutes.feedback);
+                  },
                 ),
-                const ListTile(
+                ListTile(
                   leading: Icon(
                     CupertinoIcons.settings_solid,
                     color: Colors.black,
@@ -99,9 +92,11 @@ class MyDrawer extends StatelessWidget {
                     textScaleFactor: 1.3,
                     style: TextStyle(color: Colors.black),
                   ),
-                  // Add functionality for Settings page if needed
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, MyRoutes.setting);
+                  },
                 ),
-                const Divider(),
+                Divider(),
                 ListTile(
                   leading: const Icon(
                     CupertinoIcons.arrow_right_circle_fill,

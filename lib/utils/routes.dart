@@ -7,4 +7,8 @@ class MyRoutes {
   static String register = "/register";
   
   static String verify = "/verify";
+  static String setting = "/setting";
+  static String feedback = "/feedback";
+  static String about = "/about";
+  static String profile = "/profile";
 }
