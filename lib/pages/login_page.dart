@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 50,
                 ),
-                LogInButton(_authMethods),
+                LogInButton(authMethods: _authMethods),
               ],
             ),
           ),
@@ -62,17 +62,16 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class LogInButton extends StatelessWidget {
-  final AuthMethods _authMethods;
+  final AuthMethods authMethods;
 
-  LogInButton(this._authMethods);
+  const LogInButton({Key? key, required this.authMethods}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        bool success = await _authMethods.signInWithGoogle(context);
-
-        if (success) {
+        bool res = await authMethods.signInWithGoogle(context);
+        if (res) {
           Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
         }
       },

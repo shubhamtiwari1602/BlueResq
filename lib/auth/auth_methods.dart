@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthMethods {
@@ -12,6 +13,7 @@ class AuthMethods {
   User get user => _auth.currentUser!;
 
   Future<bool> signInWithGoogle(BuildContext context) async {
+    bool res = false;
     try {
       showLoading(context, 'Signing in...');
 
@@ -37,6 +39,7 @@ class AuthMethods {
 
       if (user != null) {
         if (userCredential.additionalUserInfo!.isNewUser) {
+          // Create a user document in Firestore
           await _firestore.collection('users').doc(user.uid).set({
             'username': user.displayName,
             'uid': user.uid,
@@ -44,15 +47,28 @@ class AuthMethods {
             'userEmail': user.email,
           });
         }
+        res = true;
       }
 
       Navigator.of(context).pop(); // Close loading dialog
-      return true;
     } on FirebaseAuthException catch (e) {
       Navigator.of(context).pop(); // Close loading dialog
       showSnackBar(context, e.message!);
-      return false;
+      res = false;
+    } on PlatformException catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog
+      print('PlatformException: $e');
+      // Handle PlatformException or log for further analysis
+      showSnackBar(context, 'Google Sign-In Error. Please try again.');
+      res = false;
+    } catch (e) {
+      Navigator.of(context).pop(); // Close loading dialog
+      print('Unexpected Error: $e');
+      // Handle other unexpected errors or log for further analysis
+      showSnackBar(context, 'An unexpected error occurred. Please try again.');
+      res = false;
     }
+    return res;
   }
 
   void signOut() async {

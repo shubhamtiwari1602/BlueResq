@@ -5,6 +5,7 @@ import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
 import 'package:demo/pages/resolved_confirm.dart';
 import 'package:demo/utils/routes.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseAppCheck.instance.activate();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -43,14 +45,14 @@ class MyApp extends StatelessWidget {
         MyRoutes.homeRoute: (context) => const HomePage(),
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
-        MyRoutes.mappage: (context) => MapPage(
+        MyRoutes.mappage: (context) => const MapPage(
           animalName: '',
           severity: '',
           animalLocation: '',
         ),
         MyRoutes.verify: (context) => const verify(),
       },
-      home: AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
+      home: const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
     );
   }
 }
