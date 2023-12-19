@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo/auth/auth_methods.dart';
 import 'package:demo/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +24,29 @@ class MyDrawer extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: UserAccountsDrawerHeader(
                     accountName: Text(user?.displayName ?? "User XYZ"),
-                    accountEmail: Text(user?.email ?? "abc@gmail.com"),
+                    accountEmail: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(user?.email ?? "abc@gmail.com"),
+                        FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user?.uid)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var locationPreference =
+                                  snapshot.data!['locationPreference'];
+                              return Text(
+                                'Location Preference: $locationPreference',
+                                style: TextStyle(color: Colors.white),
+                              );
+                            }
+                            return Container(); // You can replace this with a loading indicator
+                          },
+                        ),
+                      ],
+                    ),
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: user?.photoURL != null
@@ -53,7 +76,6 @@ class MyDrawer extends StatelessWidget {
                     Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
                   },
                 ),
-                
                 ListTile(
                   leading: Icon(
                     CupertinoIcons.info,

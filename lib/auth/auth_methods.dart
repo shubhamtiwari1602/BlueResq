@@ -39,12 +39,16 @@ class AuthMethods {
 
       if (user != null) {
         if (userCredential.additionalUserInfo!.isNewUser) {
+          // Show location preference input dialog for new users
+          await _showLocationPreferenceDialog(context, user.uid);
+
           // Create a user document in Firestore
           await _firestore.collection('users').doc(user.uid).set({
-            'username': user.displayName,
             'uid': user.uid,
-            'profilePhoto': user.photoURL,
-            'userEmail': user.email,
+            'displayName': user.displayName,
+            'email': user.email,
+            'photoURL': user.photoURL,
+            'locationPreference': '', // Initialize with an empty locationPreference
           });
         }
         res = true;
@@ -69,6 +73,83 @@ class AuthMethods {
       res = false;
     }
     return res;
+  }
+
+  Future<void> _showLocationPreferenceDialog(
+      BuildContext context, String userId) async {
+    TextEditingController locationController = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Location Preference'),
+          content: TextField(
+            controller: locationController,
+            decoration:
+                InputDecoration(labelText: 'Enter your location preference'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                String locationPreference = locationController.text.trim();
+                if (locationPreference.isNotEmpty) {
+                  try {
+                    // Check if the user document exists
+                    DocumentSnapshot userDoc =
+                        await _firestore.collection('users').doc(userId).get();
+
+                    if (userDoc.exists) {
+                      // Update the location preference in Firestore
+                      await _firestore
+                          .collection('users')
+                          .doc(userId)
+                          .update({'locationPreference': locationPreference});
+                    } else {
+                      // Create the user document in Firestore
+                      await _firestore.collection('users').doc(userId).set({
+                        'uid': userId,
+                        'Username': user.displayName,
+                        'email': user.email,
+                        'photoURL': user.photoURL,
+                        'locationPreference': locationPreference,
+                      });
+                    }
+
+                    // Show a success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Location Preference Saved!'),
+                      ),
+                    );
+
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  } catch (e) {
+                    print('Error: $e');
+                    // Handle the error, e.g., show an error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('An error occurred. Please try again.'),
+                      ),
+                    );
+                  }
+                } else {
+                  // Show an error message if location preference is empty
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Location preference cannot be empty.'),
+                    ),
+                  );
+                }
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void signOut() async {
