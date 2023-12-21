@@ -53,17 +53,17 @@ class MyApp extends StatelessWidget {
         MyRoutes.loginRoute: (context) => const LoginPage(),
         MyRoutes.activecases: (context) => const CardPage(),
         MyRoutes.mappage: (context) => const MapPage(
-          animalName: '',
-          severity: '',
-          animalLocation: '',
-        ),
+              animalName: '',
+              severity: '',
+              animalLocation: '',
+            ),
         MyRoutes.verify: (context) => const verify(),
         MyRoutes.setting: (context) => const Setting(),
-        MyRoutes.feedback: (context) =>  FeedBack(),
+        MyRoutes.feedback: (context) => FeedBack(),
         MyRoutes.about: (context) => const AboutUs(),
-        
       },
-      home: const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
+      home:
+          const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly
     );
   }
 }
@@ -86,7 +86,7 @@ class AuthWrapper extends StatelessWidget {
           return const HomePage();
         }
 
-        return const LoginPage();
+        return const HomePage();
       },
     );
   }

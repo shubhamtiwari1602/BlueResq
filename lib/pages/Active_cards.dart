@@ -88,7 +88,8 @@ class CardPage extends StatelessWidget {
               locations.first.longitude,
             );
 
-            double distance = await _calculateDistance(userLatLng, animalLatLng);
+            double distance =
+                await _calculateDistance(userLatLng, animalLatLng);
             card.distance = distance;
 
             sortedCards.add(card);
@@ -108,7 +109,8 @@ class CardPage extends StatelessWidget {
     }
   }
 
-  Future<double> _calculateDistance(LatLng userLatLng, LatLng animalLatLng) async {
+  Future<double> _calculateDistance(
+      LatLng userLatLng, LatLng animalLatLng) async {
     try {
       String url =
           'https://maps.googleapis.com/maps/api/directions/json?origin=${userLatLng.latitude},${userLatLng.longitude}&destination=${animalLatLng.latitude},${animalLatLng.longitude}&key=$apiKey';
@@ -163,6 +165,34 @@ class CardItemWidget extends StatelessWidget {
             ),
           ),
         );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // Return the dialog
+            return AlertDialog(
+              title: Text('Confirmation'),
+              content:
+                  Text('Will you be able to respond to the selected case?'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text('Proceed'),
+                  onPressed: () {
+                    // Close the dialog and navigate to the confirmation page
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, '/mappage');
+                  },
+                ),
+              ],
+            );
+          },
+        );
       },
       child: Row(
         children: [
@@ -187,22 +217,26 @@ class CardItemWidget extends StatelessWidget {
                     children: [
                       Text(
                         cardItem.animalName,
-                        style: const TextStyle(fontSize: 24.0, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 24.0, color: Colors.black),
                       ),
                       const SizedBox(height: 10.0),
                       Text(
                         cardItem.location,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
                       ),
                       const SizedBox(height: 10.0),
                       Text(
                         cardItem.severity,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
                       ),
                       const SizedBox(height: 10.0),
                       Text(
                         'Distance: ${cardItem.distance?.toStringAsFixed(2)} meters',
-                        style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
                       ),
                     ],
                   ),
