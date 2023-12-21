@@ -18,12 +18,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'pages/drawer_pages/about_us.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseAppCheck.instance.activate();
   runApp(const ProviderScope(child: MyApp()));
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("Received FCM message: ${message.data}");
+    // Handle the received data
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -86,7 +91,7 @@ class AuthWrapper extends StatelessWidget {
           return const HomePage();
         }
 
-        return const HomePage();
+        return const LoginPage();
       },
     );
   }

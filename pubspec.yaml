@@ -58,6 +58,7 @@ dependencies:
   firebase_app_check: ^0.2.1+8
   
   flutter_polyline_points: ^2.0.0
+  firebase_messaging: ^14.7.9
   
   
   
