@@ -4,6 +4,8 @@ import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:demo/pages/map_pages/detailed_sit_report.dart'; 
+import 'package:demo/pages/map_pages/resolved.dart';
 
 class MapPage extends StatefulWidget {
   final String animalName;
@@ -198,26 +200,53 @@ class MapImage extends StatelessWidget {
   }
 
   CameraPosition _getInitialCameraPosition(List<LatLng> markerPositions, BuildContext context) {
-    if (markerPositions.isNotEmpty) {
-      double minLat = markerPositions.map((position) => position.latitude).reduce((a, b) => a < b ? a : b);
-      double maxLat = markerPositions.map((position) => position.latitude).reduce((a, b) => a > b ? a : b);
-      double minLng = markerPositions.map((position) => position.longitude).reduce((a, b) => a < b ? a : b);
-      double maxLng = markerPositions.map((position) => position.longitude).reduce((a, b) => a > b ? a : b);
+  if (markerPositions.isNotEmpty) {
+    // Calculate the bounds that contain both the user and animal locations
+    final double padding = 100.0; // Adjust padding as needed
+    final LatLngBounds bounds = LatLngBounds(
+      southwest: LatLng(
+        markerPositions.map((position) => position.latitude).reduce((a, b) => a < b ? a : b),
+        markerPositions.map((position) => position.longitude).reduce((a, b) => a < b ? a : b),
+      ),
+      northeast: LatLng(
+        markerPositions.map((position) => position.latitude).reduce((a, b) => a > b ? a : b),
+        markerPositions.map((position) => position.longitude).reduce((a, b) => a > b ? a : b),
+      ),
+    );
 
-      return CameraPosition(
-        target: LatLng(
-          (minLat + maxLat) / 2,
-          (minLng + maxLng) / 2,
-        ),
-        zoom: _calculateZoom(minLat, minLng, maxLat, maxLng, context),
-      );
-    } else {
-      return CameraPosition(target: userLocation, zoom: 200);
-    }
+    // Calculate the center of the bounds
+    final LatLng center = LatLng(
+      (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
+      (bounds.northeast.longitude + bounds.southwest.longitude) / 2,
+    );
+
+    // Calculate the zoom level based on the bounds and the screen size
+    final double zoom = _calculateZoom(
+      bounds.northeast.latitude,
+      bounds.southwest.longitude,
+      bounds.southwest.latitude,
+      bounds.northeast.longitude,
+      context,
+    );
+
+    return CameraPosition(
+      target: center,
+      zoom: zoom,
+    );
+  } else {
+    // If no marker positions are available, fallback to a default position and zoom level
+    return CameraPosition(
+      target: LatLng(0.0, 0.0),
+      zoom: 10.0,
+    );
   }
+}
+
+
+
 
   double _calculateZoom(double minLat, double minLng, double maxLat, double maxLng, BuildContext context) {
-    const double padding = 50.0; // Adjust padding as needed
+    const double padding = .0; // Adjust padding as needed
 
     double mapWidth = maxLng - minLng;
     double mapHeight = maxLat - minLat;
@@ -284,7 +313,10 @@ class ThreatCard extends StatelessWidget {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: () {
-                        // Do something when Resolved button is pressed
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => verify()), // Create an instance of SecondPage and pass it to Navigator.push
+                      );// Do something when Resolved button is pressed
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -293,8 +325,7 @@ class ThreatCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Do something when Request Help button is pressed
-                      },
+                    },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                       ),
@@ -309,8 +340,11 @@ class ThreatCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Do something when Detailed SitRep button is pressed
-                      },
+                     Navigator.push(
+                     context,
+                     MaterialPageRoute(builder: (context) => SituationReportPage()), // Create an instance of SecondPage and pass it to Navigator.push
+                   );
+                    },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),

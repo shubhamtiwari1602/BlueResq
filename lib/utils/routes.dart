@@ -11,4 +11,6 @@ class MyRoutes {
   static String feedback = "/feedback";
   static String about = "/about";
   static String profile = "/profile";
+  static String sitrepo ='/sitrepo';
+  static String resolved='/resolved';
 }

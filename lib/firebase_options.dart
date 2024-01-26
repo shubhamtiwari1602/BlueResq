@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '45509271399',
     projectId: 'blueresq-1a155',
     storageBucket: 'blueresq-1a155.appspot.com',
+    databaseURL: 'https://blueresq-1a155-default-rtdb.asia-southeast1.firebasedatabase.app/'
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,5 +65,6 @@ class DefaultFirebaseOptions {
     projectId: 'blueresq-1a155',
     storageBucket: 'blueresq-1a155.appspot.com',
     iosBundleId: 'com.testingBlueResq.demo',
+    databaseURL: 'https://blueresq-1a155-default-rtdb.asia-southeast1.firebasedatabase.app/'
   );
 }

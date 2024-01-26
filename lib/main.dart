@@ -9,7 +9,7 @@ import 'package:demo/pages/home_page.dart';
 import 'package:demo/pages/login_page.dart';
 
 import 'package:demo/pages/resolved_confirm.dart';
-
+import 'package:demo/pages/map_pages/detailed_sit_report.dart';
 import 'package:demo/utils/routes.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +66,8 @@ class MyApp extends StatelessWidget {
         MyRoutes.setting: (context) => const Setting(),
         MyRoutes.feedback: (context) => FeedBack(),
         MyRoutes.about: (context) => const AboutUs(),
+        MyRoutes.sitrepo:(context) => SituationReportPage(),
+        MyRoutes.resolved:(context)=> const verify(),
       },
       home:
           const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly

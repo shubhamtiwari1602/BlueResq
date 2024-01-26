@@ -1,71 +1,54 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:demo/pages/Sample_map_page.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:http/http.dart' as http;
-
-// Add your Google Maps API key here
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:demo/pages/Sample_map_page.dart';
 const String apiKey = 'AIzaSyAUqyE4e_IWgEWnOGPxrQEHYI0jcHpoBJs';
 
-class CardPage extends StatelessWidget {
+class CardPage extends StatefulWidget {
   const CardPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'Active Cases',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: FutureBuilder<List<CardItem>>(
-        future: _getSortedCards(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error loading data: ${snapshot.error}'));
-          }
-
-          List<CardItem> sortedCards = snapshot.data ?? [];
-
-          return Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: sortedCards.map((card) {
-                  return CardItemWidget(cardItem: card);
-                }).toList(),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
+  _CardPageState createState() => _CardPageState();
+}
+List<CardItem> _cards = [];
+class _CardPageState extends State<CardPage> {
+  late DatabaseReference _databaseReference;
   Future<List<CardItem>> _getSortedCards() async {
-    List<CardItem> cards = [
-      CardItem('Dog', 'severe', 'Chennai Airport'),
-      CardItem('Cat', 'mild', 'porur chennai'),
-      CardItem('Monkey', 'severe', 'triplicane chennai'),
-      CardItem('Donkey', 'mild', 'parry\'s corner chennai'),
-      CardItem('Deer', 'severe', 'Himalaya IIT Madras'),
-    ];
+    
 
-    List<CardItem> sortedCards = await _sortCardsByDistance(cards);
+    List<CardItem> sortedCards = await _sortCardsByDistance(_cards);
 
     return sortedCards;
   }
+  
 
+@override
+void initState() {
+  super.initState();
+  _databaseReference = FirebaseDatabase.instance.ref().child('name');
+  _databaseReference.onChildAdded.listen((event) {
+    Map<dynamic, dynamic>? values = event.snapshot.value as Map<dynamic, dynamic>?;
+    if (values != null) {
+      // Check if a card with the same uniqueId already exists in _cards
+      bool cardExists = _cards.any((card) => card.uniqueId == values['uniqueId']);
+      if (!cardExists) {
+        setState(() {
+          _cards.add(CardItem(
+            values['animalName'],
+            values['severity'],
+            values['location'],
+            values['uniqueId'],
+          ));
+        });
+      }
+    }
+  });
+}
   Future<List<CardItem>> _sortCardsByDistance(List<CardItem> cards) async {
     List<CardItem> sortedCards = [];
 
@@ -108,7 +91,33 @@ class CardPage extends StatelessWidget {
       return cards; // Return unsorted cards if there's an error
     }
   }
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Active Cases',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Center(
+        child: _cards.isEmpty
+            ? const CircularProgressIndicator()
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _cards.map((card) {
+                    return CardItemWidget(cardItem: card);
+                  }).toList(),
+                ),
+              ),
+      ),
+    );
+  
+  }
   Future<double> _calculateDistance(
       LatLng userLatLng, LatLng animalLatLng) async {
     try {
@@ -135,9 +144,10 @@ class CardItem {
   final String animalName;
   final String severity;
   final String location;
+  final String uniqueId;
   double? distance;
 
-  CardItem(this.animalName, this.severity, this.location);
+  CardItem(this.animalName, this.severity, this.location, this.uniqueId, {this.distance});
 }
 
 class CardItemWidget extends StatelessWidget {
@@ -165,7 +175,7 @@ class CardItemWidget extends StatelessWidget {
             ),
           ),
         );
-        showDialog(
+        /*showDialog(
           context: context,
           builder: (BuildContext context) {
             // Return the dialog
@@ -192,7 +202,7 @@ class CardItemWidget extends StatelessWidget {
               ],
             );
           },
-        );
+        );*/
       },
       child: Row(
         children: [
@@ -210,36 +220,62 @@ class CardItemWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        cardItem.animalName,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 10.0,
+                      left: 10.0,
+                      child: Text(
+                        cardItem.uniqueId, // Replace with your 7-digit ID
                         style: const TextStyle(
-                            fontSize: 24.0, color: Colors.black),
+                          fontSize: 14.0, // Adjust the font size as needed
+                          color: Colors.black,
+                          fontWeight:
+                              FontWeight.bold, // Adjust the color as needed
+                        ),
                       ),
-                      const SizedBox(height: 10.0),
-                      Text(
-                        cardItem.location,
-                        style: const TextStyle(
-                            fontSize: 18.0, color: Colors.black),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            cardItem.animalName,
+                            style: const TextStyle(
+                              fontSize: 24.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            cardItem.location,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            cardItem.severity,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          if (cardItem.distance != null)
+                            Text(
+                              'Distance: ${cardItem.distance!.toStringAsFixed(2)} meters',
+                              style: const TextStyle(
+                                  fontSize: 18.0, color: Colors.black),
+                            ),
+                          if (cardItem.distance == null)
+                            CircularProgressIndicator(), // Placeholder for loading distance
+                        ],
                       ),
-                      const SizedBox(height: 10.0),
-                      Text(
-                        cardItem.severity,
-                        style: const TextStyle(
-                            fontSize: 18.0, color: Colors.black),
-                      ),
-                      const SizedBox(height: 10.0),
-                      Text(
-                        'Distance: ${cardItem.distance?.toStringAsFixed(2)} meters',
-                        style: const TextStyle(
-                            fontSize: 18.0, color: Colors.black),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
