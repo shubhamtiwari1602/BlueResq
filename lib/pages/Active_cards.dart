@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:demo/pages/Sample_map_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 const String apiKey = 'AIzaSyAUqyE4e_IWgEWnOGPxrQEHYI0jcHpoBJs';
 
 class CardPage extends StatefulWidget {
@@ -18,10 +19,14 @@ class CardPage extends StatefulWidget {
 List<CardItem> _cards = [];
 class _CardPageState extends State<CardPage> {
   late DatabaseReference _databaseReference;
+  late Position _currentPosition;
   Future<List<CardItem>> _getSortedCards() async {
     
 
     List<CardItem> sortedCards = await _sortCardsByDistance(_cards);
+    // Sort the cards by distance
+    sortedCards.sort((a, b) => (a.distance ?? double.infinity)
+      .compareTo(b.distance ?? double.infinity));
 
     return sortedCards;
   }
@@ -31,6 +36,7 @@ class _CardPageState extends State<CardPage> {
 void initState() {
   super.initState();
   _databaseReference = FirebaseDatabase.instance.ref().child('name');
+  _requestLocationPermission();
   _databaseReference.onChildAdded.listen((event) {
     Map<dynamic, dynamic>? values = event.snapshot.value as Map<dynamic, dynamic>?;
     if (values != null) {
@@ -44,8 +50,17 @@ void initState() {
             values['location'],
             values['uniqueId'],
           ));
+          _sortCardsByDistance(_cards);
         });
       }
+    }
+  });
+  _databaseReference.onChildRemoved.listen((event) {
+    Map<dynamic, dynamic>? values = event.snapshot.value as Map<dynamic, dynamic>?;
+    if (values != null) {
+      setState(() {
+        _cards.removeWhere((card) => card.uniqueId == values['uniqueId']);
+      });
     }
   });
 }
@@ -92,52 +107,83 @@ void initState() {
     }
   }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'Active Cases',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      elevation: 0,
+      centerTitle: true,
+      title: const Text(
+        'Active Cases',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
-      body: Center(
-        child: _cards.isEmpty
-            ? const CircularProgressIndicator()
-            : SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _cards.map((card) {
-                    return CardItemWidget(cardItem: card);
-                  }).toList(),
-                ),
+    ),
+    body: Center(
+      child: FutureBuilder<List<CardItem>>(
+        future: _getSortedCards(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Text('No data available');
+          } else {
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: snapshot.data!.map((card) {
+                  return CardItemWidget(cardItem: card);
+                }).toList(),
               ),
+            );
+          }
+        },
       ),
-    );
-  
+    ),
+  );
+}
+  Future<void> _requestLocationPermission() async {
+    if (await Permission.location.isDenied) {
+      await Permission.location.request();
+    }
+    _getCurrentLocation();
   }
-  Future<double> _calculateDistance(
-      LatLng userLatLng, LatLng animalLatLng) async {
+  Future<void> _getCurrentLocation() async {
     try {
-      String url =
-          'https://maps.googleapis.com/maps/api/directions/json?origin=${userLatLng.latitude},${userLatLng.longitude}&destination=${animalLatLng.latitude},${animalLatLng.longitude}&key=$apiKey';
-
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['routes'][0]['legs'][0]['distance']['value'].toDouble();
-      } else {
-        print('Error calculating distance: ${response.reasonPhrase}');
-        return 0.0;
-      }
+      _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
     } catch (e) {
-      print("Error calculating distance: $e");
-      return 0.0;
+      print("Error getting current position: $e");
     }
   }
+  Future<double> _calculateDistance(LatLng userLatLng, LatLng animalLatLng) async {
+  try {
+    String url =
+        'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${userLatLng.latitude},${userLatLng.longitude}&destinations=${animalLatLng.latitude},${animalLatLng.longitude}&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['status'] == 'OK' &&
+          data['rows'][0]['elements'][0]['status'] == 'OK') {
+        return data['rows'][0]['elements'][0]['distance']['value'].toDouble();
+      } else {
+        print('Error calculating distance: ${data['error_message']}');
+        return 0.0;
+      }
+    } else {
+      print('Error calculating distance: ${response.reasonPhrase}');
+      return 0.0;
+    }
+  } catch (e) {
+    print("Error calculating distance: $e");
+    return 0.0;
+  }
+}
+
 }
 
 class CardItem {
@@ -175,34 +221,6 @@ class CardItemWidget extends StatelessWidget {
             ),
           ),
         );
-        /*showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // Return the dialog
-            return AlertDialog(
-              title: Text('Confirmation'),
-              content:
-                  Text('Will you be able to respond to the selected case?'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    // Close the dialog
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text('Proceed'),
-                  onPressed: () {
-                    // Close the dialog and navigate to the confirmation page
-                    Navigator.of(context).pop();
-                    Navigator.pushNamed(context, '/mappage');
-                  },
-                ),
-              ],
-            );
-          },
-        );*/
       },
       child: Row(
         children: [
