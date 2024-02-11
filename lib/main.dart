@@ -61,13 +61,16 @@ class MyApp extends StatelessWidget {
               animalName: '',
               severity: '',
               animalLocation: '',
+              uniqueId: '', 
+              
+              
             ),
-        MyRoutes.verify: (context) => const verify(),
+        MyRoutes.verify: (context) =>  Verify(onCardResolved: (String caseId) {  }, caseId: '', animalName: '', location: '', severity: '',),
         MyRoutes.setting: (context) => const Setting(),
         MyRoutes.feedback: (context) => FeedBack(),
         MyRoutes.about: (context) => const AboutUs(),
         MyRoutes.sitrepo:(context) => SituationReportPage(),
-        MyRoutes.resolved:(context)=> const verify(),
+        MyRoutes.resolved:(context)=> Verify(onCardResolved: (String caseId) {  }, caseId: '', animalName: '', location: '', severity: '',),
       },
       home:
           const AuthWrapper(), // Use AuthWrapper instead of StreamBuilder directly

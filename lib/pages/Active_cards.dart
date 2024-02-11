@@ -20,6 +20,11 @@ List<CardItem> _cards = [];
 class _CardPageState extends State<CardPage> {
   late DatabaseReference _databaseReference;
   late Position _currentPosition;
+  void removeCardById(String uniqueId) {
+    setState(() {
+      _cards.removeWhere((card) => card.uniqueId == uniqueId);
+    });
+  }
   Future<List<CardItem>> _getSortedCards() async {
     
 
@@ -35,7 +40,7 @@ class _CardPageState extends State<CardPage> {
 @override
 void initState() {
   super.initState();
-  _databaseReference = FirebaseDatabase.instance.ref().child('name');
+  _databaseReference = FirebaseDatabase.instance.ref().child('uniqueId');
   _requestLocationPermission();
   _databaseReference.onChildAdded.listen((event) {
     Map<dynamic, dynamic>? values = event.snapshot.value as Map<dynamic, dynamic>?;
@@ -215,9 +220,12 @@ class CardItemWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => MapPage(
+              uniqueId: cardItem.uniqueId,
               animalName: cardItem.animalName,
               severity: cardItem.severity,
               animalLocation: cardItem.location,
+              
+              
             ),
           ),
         );

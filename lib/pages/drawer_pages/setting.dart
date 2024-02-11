@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:demo/utils/routes.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -76,6 +77,14 @@ class _SettingState extends State<Setting> {
                   );
                 }).toList(),
               ),
+            ),
+            const SizedBox(height: 16),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, MyRoutes.homeRoute);
+              },
+              child: const Text('Go Back to Home'),
             ),
           ],
         ),

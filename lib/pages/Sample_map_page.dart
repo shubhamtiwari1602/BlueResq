@@ -1,3 +1,5 @@
+import 'package:demo/auth/database_helpher.dart';
+import 'package:demo/pages/resolved_confirm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -9,14 +11,18 @@ import 'package:demo/pages/map_pages/resolved.dart';
 
 class MapPage extends StatefulWidget {
   final String animalName;
+  final String uniqueId; 
   final String severity;
   final String animalLocation;
+  
 
   const MapPage({
     Key? key,
     required this.animalName,
+    required this.uniqueId,
     required this.severity,
     required this.animalLocation,
+    
   }) : super(key: key);
 
   @override
@@ -134,6 +140,7 @@ class _MapPageState extends State<MapPage> {
                 animalName: widget.animalName,
                 severity: widget.severity,
                 userLocation: userLocation,
+                uniqueId: widget.uniqueId,
                 animalLocation: widget.animalLocation,
                 onDrivePressed: () async {
                   LatLng animalLatLng = await _convertAddressToLatLng(widget.animalLocation);
@@ -263,20 +270,24 @@ class MapImage extends StatelessWidget {
   }
 }
 
+ // Update with the actual path to Verify
+
 class ThreatCard extends StatelessWidget {
   final String animalName;
   final String severity;
   final LatLng? userLocation; // Make it nullable
   final String animalLocation;
   final VoidCallback onDrivePressed;
+  final String uniqueId; // Add a field for uniqueId
 
-  const ThreatCard({
+  ThreatCard({
     Key? key,
     required this.animalName,
     required this.severity,
     required this.userLocation,
     required this.animalLocation,
     required this.onDrivePressed,
+    required this.uniqueId, // Initialize uniqueId in the constructor
   }) : super(key: key);
 
   @override
@@ -313,10 +324,21 @@ class ThreatCard extends StatelessWidget {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => verify()), // Create an instance of SecondPage and pass it to Navigator.push
-                      );// Do something when Resolved button is pressed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Verify(
+                              onCardResolved: (String caseId) {
+                                // Call the method to remove the card from the list
+                                 deleteCardData(uniqueId); 
+                              },
+                              caseId: uniqueId, // Use the uniqueId field
+                              animalName: animalName,
+                              location: animalLocation,
+                              severity: severity,
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -325,7 +347,8 @@ class ThreatCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                    },
+                        // Handle Request Help button press
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                       ),
@@ -340,11 +363,13 @@ class ThreatCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                     Navigator.push(
-                     context,
-                     MaterialPageRoute(builder: (context) => SituationReportPage()), // Create an instance of SecondPage and pass it to Navigator.push
-                   );
-                    },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SituationReportPage(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
@@ -360,3 +385,4 @@ class ThreatCard extends StatelessWidget {
     );
   }
 }
+
