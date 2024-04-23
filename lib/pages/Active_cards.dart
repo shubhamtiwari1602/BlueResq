@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:demo/pages/Sample_map_page.dart';
 import 'package:permission_handler/permission_handler.dart';
-const String apiKey = 'AIzaSyAUqyE4e_IWgEWnOGPxrQEHYI0jcHpoBJs';
+const String apiKey = API_KEY;
 
 class CardPage extends StatefulWidget {
   const CardPage({Key? key}) : super(key: key);
